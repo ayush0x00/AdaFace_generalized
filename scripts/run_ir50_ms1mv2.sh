@@ -1,12 +1,11 @@
 
 python main.py \
-    --data_root /mnt/home/kimminc2/data \
-    --train_data_path faces_emore \
-    --val_data_path faces_emore \
+    --data_root /Users/ayush/Desktop/PGP/ \
+    --train_data_path FRSyn/ \
+    --val_data_path FRSyn/ \
     --prefix ir50_ms1mv2_adaface \
     --use_wandb \
-    --use_mxrecord \
-    --gpus 2 \
+    --gpus 0 \
     --use_16bit \
     --arch ir_50 \
     --batch_size 512 \

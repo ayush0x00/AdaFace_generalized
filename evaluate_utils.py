@@ -9,14 +9,19 @@ import sklearn
 from scipy import interpolate
 
 def get_val_data(data_path):
-    agedb_30, agedb_30_issame = get_val_pair(data_path, 'agedb_30')
-    cfp_fp, cfp_fp_issame = get_val_pair(data_path, 'cfp_fp')
-    lfw, lfw_issame = get_val_pair(data_path, 'lfw')
-    cplfw, cplfw_issame = get_val_pair(data_path, 'cplfw')
-    calfw, calfw_issame = get_val_pair(data_path, 'calfw')
-    return agedb_30, cfp_fp, lfw, agedb_30_issame, cfp_fp_issame, lfw_issame, cplfw, cplfw_issame, calfw, calfw_issame
+    print("Looking for data in ",data_path)
+    imgs_orig, imgs_orig_issame = get_val_pair(data_path, 'imgs_orig')
+    # agedb_30, agedb_30_issame = get_val_pair(data_path, 'agedb_30')
+    # cfp_fp, cfp_fp_issame = get_val_pair(data_path, 'cfp_fp')
+    # lfw, lfw_issame = get_val_pair(data_path, 'lfw')
+    # cplfw, cplfw_issame = get_val_pair(data_path, 'cplfw')
+    # calfw, calfw_issame = get_val_pair(data_path, 'calfw')
+    # return agedb_30, cfp_fp, lfw, agedb_30_issame, cfp_fp_issame, lfw_issame, cplfw, cplfw_issame, calfw, calfw_issame
+    return imgs_orig,imgs_orig_issame
 
 def get_val_pair(path, name, use_memfile=True):
+    print("*"*20)
+    print("Looking for data in ",path+name)
     if use_memfile:
         mem_file_dir = os.path.join(path, name, 'memfile')
         mem_file_name = os.path.join(mem_file_dir, 'mem_file.dat')

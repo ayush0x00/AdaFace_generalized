@@ -10,6 +10,7 @@ import numpy as np
 from torchvision import transforms as trans
 import os
 import numbers
+import numpy as np
 
 def save_rec_to_img_dir(rec_path, swap_color_channel=False, save_as_png=False):
 
@@ -46,27 +47,32 @@ def save_rec_to_img_dir(rec_path, swap_color_channel=False, save_as_png=False):
             img.save(img_save_path)
         else:
             img_save_path = label_path/'{}.jpg'.format(idx)
+            # print("Saving image ", img_save_path)
             img.save(img_save_path, quality=95)
 
 def load_bin(path, rootdir, image_size=[112,112]):
 
+    # print("Loading path from ",path, " with root dir ",rootdir)
+
     test_transform = trans.Compose([
                 trans.ToTensor(),
+                trans.Resize((112,112)),
                 trans.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
             ])
     if not rootdir.exists():
         rootdir.mkdir()
-    bins, issame_list = pickle.load(open(path, 'rb'), encoding='bytes')
+    bins,issame_list = pickle.load(open(path, 'rb'),encoding="bytes")
+
     data = bcolz.fill([len(bins), 3, image_size[0], image_size[1]], dtype=np.float32, rootdir=rootdir, mode='w')
-    for i in range(len(bins)):
-        _bin = bins[i]
-        img = mx.image.imdecode(_bin).asnumpy()
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-        img = Image.fromarray(img.astype(np.uint8))
-        data[i, ...] = test_transform(img)
-        i += 1
-        if i % 1000 == 0:
-            print('loading bin', i)
+    with tqdm(total=len(bins),unit='images') as pbar:
+        for i in range(len(bins)):
+            _bin = bins[i]
+            img = mx.image.imdecode(_bin).asnumpy()
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+            img = Image.fromarray(img.astype(np.uint8))
+            data[i, ...] = test_transform(img)
+            # img.show()
+            pbar.update(1)
     print(data.shape)
     np.save(str(rootdir)+'_list', np.array(issame_list))
     return data, issame_list
@@ -94,4 +100,3 @@ if __name__ == '__main__':
 
         for i in range(len(bin_files)):
             load_bin(rec_path/(bin_files[i]+'.bin'), rec_path/bin_files[i])
-
